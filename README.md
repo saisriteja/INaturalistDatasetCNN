@@ -105,3 +105,7 @@ for i in range(10):
 plt.show()
 
 ```
+
+![arch1](https://user-images.githubusercontent.com/48018142/163723813-f5d8597d-42da-4157-a418-e961ae4d3927.png)
+![arch](https://user-images.githubusercontent.com/48018142/163723815-2a432c07-bc55-4b27-bdb8-3e6b873351a1.png)
+
