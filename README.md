@@ -68,43 +68,41 @@ for l in layer_dictionary:
     if l.activation == tf.keras.activations.selu:
         l.activation = guidedbackpropSelu
 
+num_features = 10
+size = 1
+num_imag_in_row = 1
+num_cols = num_features // num_imag_in_row
+display_grid = np.ones((size * num_cols, num_imag_in_row * size))
+
+k = 1
+j = 1
+for col in range(num_cols): 
+  for row in range(num_imag_in_row):
+    channel_image = CONV5_layer_activation[j, k, col * num_imag_in_row + row]
+    display_grid[col * size : (col + 1) * size, row * size : (row + 1) * size] = channel_image
+  
+scale = 1. / size
+plt.figure(figsize=(scale * display_grid.shape[1], scale * display_grid.shape[0]))
+plt.title(vis_true_labels[index])
+plt.grid(False)
+plt.imshow(display_grid, aspect='auto',cmap='gray')  
+plt.show()                                         
 
 
-# The shape of the layer that we are interested in
-conv_output_shape = model.layers[-8].output.shape[1:]
+# Guided backprop gradient visualisation
 
-plt.figure(figsize=(30, 60))
-for i in range(10):
-    # Index of a random pixel
-    neuron_index_x = np.random.randint(0, conv_output_shape[0])
-    neuron_index_y = np.random.randint(0, conv_output_shape[1])
-    neuron_index_z = np.random.randint(0, conv_output_shape[2])
-
-    # Mask to focus on the outputs of only one neuron in the last convolution layer
-    masking_matrix = np.zeros((1, *conv_output_shape), dtype="float")
-    masking_matrix[0, neuron_index_x, neuron_index_y, neuron_index_z] = 1
-
-    # Calculate the gradients
-    with tf.GradientTape() as tape:
-        inputs = tf.cast(np.array([np.array(img)]), tf.float32)
-        tape.watch(inputs)
-        outputs = guided_backprop_model(inputs) * masking_matrix
-
-    grads_visualize = tape.gradient(outputs, inputs)[0]
-
-    # Visualize the output of guided backpropagation
-    img_guided_bp = np.dstack((grads_visualize[:, :, 0], grads_visualize[:, :, 1], grads_visualize[:, :, 2],)) 
-
-    # Scaling to 0-1      
-    img_guided_bp = img_guided_bp - np.min(img_guided_bp)
-    img_guided_bp /= img_guided_bp.max()
-    plt.subplot(10, 1, i+1)
-    plt.imshow(img_guided_bp)
-    plt.axis("off")
-
+grad_image = np.dstack((
+            target_gradient[:, :, 0],
+            target_gradient[:, :, 1],
+            target_gradient[:, :, 2],
+        ))       
+grad_image = grad_image - np.min(grad_image)
+grad_image = grad_image/grad_image.max()
+imgplot = plt.imshow(grad_image)
+plt.axis("off")
 plt.show()
-
 ```
+
+![gradcam](https://user-images.githubusercontent.com/48018142/163724025-e33dd226-8f2b-4334-a2df-c11cd41bc3bd.png)
 ![arch](https://user-images.githubusercontent.com/48018142/163723815-2a432c07-bc55-4b27-bdb8-3e6b873351a1.png)
-![arch1](https://user-images.githubusercontent.com/48018142/163723813-f5d8597d-42da-4157-a418-e961ae4d3927.png)
 
