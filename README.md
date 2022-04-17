@@ -39,7 +39,7 @@ The image below shows what a filter see in the convolutional network.
 
 ```
 
-![truelabel](https://user-images.githubusercontent.com/48018142/163723275-8a14470a-1fc7-44f6-9ad2-8d7f33d5d62b.JPG | width=100)
+![truelabel](https://user-images.githubusercontent.com/48018142/163723275-8a14470a-1fc7-44f6-9ad2-8d7f33d5d62b.JPG )
 
 
 
